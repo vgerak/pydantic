@@ -104,7 +104,7 @@ with custom properties and validation.
 : see [Typing Iterables](#typing-iterables) below for more detail on parsing and validation
 
 `subclass of typing.TypedDict`
-: Same as `dict` but _pydantic_ will validate the dictionary since keys are annotated.  
+: Same as `dict` but _pydantic_ will validate the dictionary since keys are annotated.
   See [Annotated Types](#annotated-types) below for more detail on parsing and validation
 
 `typing.Set`
@@ -480,6 +480,9 @@ _(This script is complete, it should run "as is")_
 `HttpUrl`
 : a stricter HTTP URL; see [URLs](#urls)
 
+`FileUrl`
+: a file path URL; see [URLs](#urls)
+
 `PostgresDsn`
 : a postgres DSN style URL; see [URLs](#urls)
 
@@ -564,11 +567,12 @@ _(This script is complete, it should run "as is")_
 
 For URI/URL validation the following types are available:
 
-- `AnyUrl`: any scheme allowed, TLD not required
-- `AnyHttpUrl`: schema `http` or `https`, TLD not required
-- `HttpUrl`: schema `http` or `https`, TLD required, max length 2083
-- `PostgresDsn`: schema `postgres` or `postgresql`, user info required, TLD not required
-- `RedisDsn`: schema `redis` or `rediss`, user info not required, tld not required (CHANGED: user info
+- `AnyUrl`: any scheme allowed, TLD not required, host required
+- `AnyHttpUrl`: scheme `http` or `https`, TLD not required, host required
+- `HttpUrl`: scheme `http` or `https`, TLD required, host required, max length 2083
+- `FileUrl`: scheme `file`, host not required
+- `PostgresDsn`: scheme `postgres` or `postgresql`, user info required, TLD not required, host required
+- `RedisDsn`: scheme `redis` or `rediss`, user info not required, TLD not required, host not required (CHANGED: user info
   not required from **v1.6** onwards), user info may be passed without user part (e.g., `rediss://:pass@localhost`)
 - `stricturl`, method with the following keyword arguments:
     - `strip_whitespace: bool = True`
@@ -828,16 +832,16 @@ The following arguments are available when using the `conbytes` type function
 
 ## Strict Types
 
-You can use the `StrictStr`, `StrictBytes`, `StrictInt`, `StrictFloat`, and `StrictBool` types 
+You can use the `StrictStr`, `StrictBytes`, `StrictInt`, `StrictFloat`, and `StrictBool` types
 to prevent coercion from compatible types.
 These types will only pass validation when the validated value is of the respective type or is a subtype of that type.
-This behavior is also exposed via the `strict` field of the `ConstrainedStr`, `ConstrainedBytes`, 
+This behavior is also exposed via the `strict` field of the `ConstrainedStr`, `ConstrainedBytes`,
 `ConstrainedFloat` and `ConstrainedInt` classes and can be combined with a multitude of complex validation rules.
 
 The following caveats apply:
 
 - `StrictBytes` (and the `strict` option of `ConstrainedBytes`) will accept both `bytes`,
-   and `bytearray` types. 
+   and `bytearray` types.
 - `StrictInt` (and the `strict` option of `ConstrainedInt`) will not accept `bool` types,
     even though `bool` is a subclass of `int` in Python. Other subclasses will work.
 - `StrictFloat` (and the `strict` option of `ConstrainedFloat`) will not accept `int`.
